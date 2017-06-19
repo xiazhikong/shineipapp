@@ -1,6 +1,6 @@
 <?php
 
-require( '../params.php');
+$params = require( __DIR__.'./../params.php');
 
 return [
     'class' => 'yii\db\Connection',
