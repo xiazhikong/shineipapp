@@ -76,6 +76,18 @@ class ClientsController extends Controller
         $model = new Clients();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            //创建一个客户，给总经理邓宇\销售总监赵万里以及对应的销售人员发邮件
+            $clientLiaisonStringValue = $model->clientLiaison;
+            $clientLiaisonEmail = (new Clients())::findByClientName($clientLiaisonStringValue)->clientEmail;
+
+            Yii::$app->mailer->compose('clientCreatedMsgToAll', ['model' => $model,
+                'clientLiaisonStringValue' => $clientLiaisonStringValue])
+                ->setFrom('kf@shineip.com')
+                ->setTo(['dy@shineip.com', '53707942@qq.com', $clientLiaisonEmail])
+                ->SetSubject('阳光惠远客服中心通知邮件：客户信息有更新')
+                ->send();
+
             return $this->redirect(['view', 'id' => $model->clientID]);
         } else {
             return $this->render('create', [
@@ -95,6 +107,20 @@ class ClientsController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            //客户信息更新后，给邓宇、赵万里以及负责此客户的具体销售人员发邮件
+            $clientLiaisonStringValue = $model->clientLiaison;
+            $clientLiaisonEmail = (new Clients())::findByClientName($clientLiaisonStringValue)->clientEmail;
+
+            Yii::$app->mailer->compose('clientUpdatedMsgToAll', ['model' => $model,
+            'clientLiaisonStringValue' => $clientLiaisonStringValue])
+                ->setFrom('kf@shineip.com')
+                ->setTo(['dy@shineip.com', '53707942@qq.com', $clientLiaisonEmail])
+                ->SetSubject('阳光惠远客服中心通知邮件：客户信息有更新')
+                ->send();
+
+
+
             return $this->redirect(['view', 'id' => $model->clientID]);
         } else {
             return $this->render('update', [
@@ -111,7 +137,19 @@ class ClientsController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        //删除一个客户信息，给总经理，销售总监，以及相应的销售人员发邮件
+        $clientModelObject = $this->findModel($id);
+        $clientLiaison = $clientModelObject->clientLiaison;
+        $clientLiaisonEmail = (new Clients())::findByClientName($clientLiaison)->clientEmail;
+
+        Yii::$app->mailer->compose('clientDelWarning', ['clientModelObject' => $clientModelObject])
+            ->setFrom('kf@shineip.com')
+            ->setTo(['dy@shineip.com', '53707942@qq.com', $clientLiaisonEmail])
+            ->SetSubject('阳光惠远客服中心警告邮件：客户信息被删除')
+            ->send();
+
+        //先发邮件，再删除
+        $clientModelObject->delete();
 
         return $this->redirect(['index']);
     }

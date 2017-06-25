@@ -94,6 +94,16 @@ class Clients extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return static::findOne(['clientUsername' => $username]);
     }
+    /**
+     * Finds user by clientName
+     *
+     * @param string $clientName
+     * @return static|null
+     */
+    public static function findByClientName($clientName)
+    {
+        return static::findOne(['clientName' => $clientName]);
+    }
 
     /**
      * @inheritdoc
