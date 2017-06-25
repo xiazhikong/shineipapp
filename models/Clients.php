@@ -40,10 +40,11 @@ class Clients extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             [['clientUsername', 'clientPassword', 'clientOrgnization', 'clientName', 'clientEmail', 'clientCellPhone', 'clientLandline', 'ClientAddress', 'clientLiaison', 'clientCreateDate', 'clientNote'], 'required'],
+            [['clientEmail'], 'email'],
             [['clientCreateDate'], 'safe'],
             [['clientNote'], 'string'],
             [['clientUsername', 'clientPassword', 'clientOrgnization', 'clientName', 'clientEmail', 'clientCellPhone', 'clientLandline', 'ClientAddress', 'clientLiaison'], 'string', 'max' => 255],
-            [['auth_key', 'access_token'], 'string', 'max' => 32],
+            [['authKey'], 'string', 'max' => 32],
         ];
     }
 

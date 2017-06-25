@@ -138,10 +138,10 @@ class PatenteventsController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
             //专利事件有update，给client发邮件
-            $patentClientEmail = $model->patent->client->clientEmail;
             $patentClientStringValue = $model->patent->client->clientName;
+            $patentClientEmail = $model->patent->client->clientEmail;
 
-            Yii::$app->mailer->compose('eventToTheClient', ['model' => $model,
+            Yii::$app->mailer->compose('eventMsgToTheClient', ['model' => $model,
                 'patentClientStringValue' => $patentClientStringValue])
                 ->setFrom('kf@shineip.com')
                 ->setTo($patentClientEmail)
@@ -155,8 +155,7 @@ class PatenteventsController extends Controller
             $patentPMStringValue = $model->patent->patentProcessManager;
             $patentProcessManagerEmail = $patentRelatedPersonnelObject::findByClientName($patentPMStringValue)->clientEmail;
 
-            Yii::$app->mailer->compose('eventMsgToPM', ['model' => $model,
-                'patentPMStringValue' => $patentPMStringValue ])
+            Yii::$app->mailer->compose('eventMsgToPM', ['model' => $model, 'patentPMStringValue' => $patentPMStringValue])
                 ->setFrom('kf@shineip.com')
                 ->setTo($patentProcessManagerEmail)
                 ->SetSubject('阳光惠远客服中心通知邮件')
@@ -216,7 +215,7 @@ class PatenteventsController extends Controller
         Yii::$app->mailer->compose('eventDelWarning', ['patentEventObject' => $patentEventObject,
             'patentPMStringValue' => $patentPMStringValue,
             'patentAgentStringValue' => $patentAgentStringValue,
-            'patentEventCreator' => $patentEventCreatorStringValue])
+            'patentEventCreatorStringValue' => $patentEventCreatorStringValue])
             ->setFrom('kf@shineip.com')
             ->setTo([$patentPMEmail,$patentAgentEmail,$patentEventCreatorEmail])
             ->SetSubject('阳光惠远客服中心警告邮件：专利事件被删除')

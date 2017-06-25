@@ -74,6 +74,7 @@ class ClientsController extends Controller
     public function actionCreate()
     {
         $model = new Clients();
+        $model->authKey = Yii::$app->security->generateRandomString();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
