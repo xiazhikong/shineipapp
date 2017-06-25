@@ -30,10 +30,10 @@
             [
                 'options' => ['class' => 'sidebar-menu'],
                 'items' => [
-                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+                    ['label' => '菜单列表', 'options' => ['class' => 'header']],
+                    ['label' => '客户管理', 'icon' => 'group', 'url' => \yii\helpers\Url::to(['clients/index'])],
+                    ['label' => '专利申请', 'icon' => 'file-text-o', 'url' => \yii\helpers\Url::to(['patents/index'])],
+                    ['label' => '专利事件', 'icon' => 'list-ul', 'url' => \yii\helpers\Url::to(['patentevents/index'])],
                     [
                         'label' => 'Same tools',
                         'icon' => 'share',

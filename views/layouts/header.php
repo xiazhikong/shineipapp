@@ -3,6 +3,19 @@ use yii\helpers\Html;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
+
+// treeview没有被active的这个问题在AdminLte3.0 将会被解决，暂时先这么处理
+$this->registerJs('
+var url = window.location;
+
+$(\'ul.sidebar-menu a\').filter(function() {
+  return this.href == url;
+}).parent().addClass(\'active\');
+
+$(\'ul.treeview-menu a\').filter(function() {
+  return this.href == url;
+}).closest(\'.treeview\').addClass(\'active\');
+');
 ?>
 
 <header class="main-header">

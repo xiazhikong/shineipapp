@@ -5,7 +5,12 @@ use yii\helpers\Html;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-dmstr\web\AdminLteAsset::register($this);
+if (Yii::$app->controller->action->id === 'signup') {
+    // AdminLtePluginAsset是依赖于AdminLteAsset的，所以可以取消AdminLteAsset的注册
+    app\assets\AdminLtePluginAsset::register($this);
+}else{
+    dmstr\web\AdminLteAsset::register($this);
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

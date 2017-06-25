@@ -40,10 +40,11 @@ class Clients extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             [['clientUsername', 'clientPassword', 'clientOrgnization', 'clientName', 'clientEmail', 'clientCellPhone', 'clientLandline', 'ClientAddress', 'clientLiaison', 'clientCreateDate', 'clientNote'], 'required'],
+            [['clientEmail'], 'email'],
             [['clientCreateDate'], 'safe'],
             [['clientNote'], 'string'],
             [['clientUsername', 'clientPassword', 'clientOrgnization', 'clientName', 'clientEmail', 'clientCellPhone', 'clientLandline', 'ClientAddress', 'clientLiaison'], 'string', 'max' => 255],
-            [['auth_key', 'access_token'], 'string', 'max' => 32],
+            [['authKey'], 'string', 'max' => 32],
         ];
     }
 
@@ -94,6 +95,16 @@ class Clients extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return static::findOne(['clientUsername' => $username]);
     }
+    /**
+     * Finds user by clientName
+     *
+     * @param string $clientName
+     * @return static|null
+     */
+    public static function findByClientName($clientName)
+    {
+        return static::findOne(['clientName' => $clientName]);
+    }
 
     /**
      * @inheritdoc
@@ -109,6 +120,24 @@ class Clients extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function getAuthKey()
     {
         return $this->authKey;
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->clientPassword = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateAuthKey()
+    {
+        $this->authKey = Yii::$app->security->generateRandomString();
     }
 
     /**
