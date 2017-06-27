@@ -74,22 +74,25 @@ class ClientsController extends Controller
     public function actionCreate()
     {
         $model = new Clients();
-        $model->generateAuthKey();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->generateAuthKey();
+            $model->setPassword($model->clientPassword);
+            $model->clientCreateDate = date('Y-m-d');
+            if ($model->save()) {
+                //创建一个客户，给总经理邓宇\销售总监赵万里以及对应的销售人员发邮件
+                $clientLiaisonStringValue = $model->clientLiaison;
+                $clientLiaisonEmail = Clients::findByClientName($clientLiaisonStringValue)->clientEmail;
 
-            //创建一个客户，给总经理邓宇\销售总监赵万里以及对应的销售人员发邮件
-            $clientLiaisonStringValue = $model->clientLiaison;
-            $clientLiaisonEmail = Clients::findByClientName($clientLiaisonStringValue)->clientEmail;
+                Yii::$app->mailer->compose('clientCreatedMsgToAll', ['model' => $model,
+                    'clientLiaisonStringValue' => $clientLiaisonStringValue])
+                    ->setFrom('kf@shineip.com')
+                    ->setTo(['dy@shineip.com', '53707942@qq.com', $clientLiaisonEmail])
+                    ->SetSubject('阳光惠远客服中心通知邮件：客户信息有更新')
+                    ->send();
 
-            Yii::$app->mailer->compose('clientCreatedMsgToAll', ['model' => $model,
-                'clientLiaisonStringValue' => $clientLiaisonStringValue])
-                ->setFrom('kf@shineip.com')
-                ->setTo(['dy@shineip.com', '53707942@qq.com', $clientLiaisonEmail])
-                ->SetSubject('阳光惠远客服中心通知邮件：客户信息有更新')
-                ->send();
-
-            return $this->redirect(['view', 'id' => $model->clientID]);
+                return $this->redirect(['view', 'id' => $model->clientID]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,

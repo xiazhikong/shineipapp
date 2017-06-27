@@ -30,7 +30,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'clientLiaison')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'clientCreateDate')->textInput() ?>
+    <?//= $form->field($model, 'clientCreateDate')->textInput() ?>
 
     <?= $form->field($model, 'clientNote')->textarea(['rows' => 6]) ?>
 
