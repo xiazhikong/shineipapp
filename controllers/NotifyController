@@ -1,0 +1,37 @@
+<?php
+
+namespace app\controllers;
+
+use Yii;
+use app\models\Clients;
+use app\models\ClientsSearch;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+
+/**
+ * ClientsController implements the CRUD actions for Clients model.
+ */
+class NotifyController extends Controller
+{
+    /**
+     * Deletes an existing Clients model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionNotify($serial,$msgType,$clientLiaisonEmail)
+    {
+        //删除一个客户信息，给总经理，销售总监，以及相应的销售人员发邮件
+        $clientModelObject = unserialize($serial);
+        Yii::$app->mailer->compose($msgType, ['clientModelObject' => $clientModelObject])
+            ->setFrom('kf@shineip.com')
+            ->setTo(['dy@shineip.com', '53707942@qq.com', $clientLiaisonEmail])
+            ->SetSubject('阳光惠远客服中心警告邮件：客户信息被删除')
+            ->send();
+    }
+
+
+}
+?>
